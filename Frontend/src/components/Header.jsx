@@ -3,10 +3,10 @@ import { assets } from "../assets/assets"
 
 const Header = () => {
   return (
-    <div className='flex flex-col md:flex-row flex-wrap bg-primary rounded-lg px-6 md:px-10 lg:px-20'>
+    <div className='flex flex-col md:flex-row flex-wrap bg-primary rounded-lg px-6 md:px-10 lg:px-20 gap-y-10 py-20'>
     {/* --------------------LEFT SIDE------------------ */}
     <div className='md:w-1/2 flex flex-col items-start justify-center gap-4 py-10 m-auto md:py-[10vh] mmd:mb-[-30px]'>
-        <p className='text-3xl md:text-4xl lg:text-5xl text-white font-semibold leading-tight md:leadingg-tight lg:leading-tight'>Book Appointment <br/> With Truted Doctors</p>
+        <p className='text-3xl md:text-4xl lg:text-5xl text-white font-semibold leading-tight md:leadingg-tight lg:leading-tight'>Book Appointment <br/> With Truted<br/> Doctors</p>
         <div className='flex flex-col md:flex-row items-center gap-3 text-white text-sm font-light '>
             <img className='w-28' src={assets.group_profiles} alt=""/>
             <p>Simply browser through our extensive list of trusted doctors ,<br className='hidden sm:block'/>
