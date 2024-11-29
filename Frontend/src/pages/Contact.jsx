@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import ContactImage from "../assets/contact_image.png"; // Adjust this path if necessary
 
 const Contact = () => {

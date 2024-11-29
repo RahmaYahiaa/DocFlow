@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-[3fr_1fr_1fr] gap-10 text-sm">
           {/* Left Section */}
           <div>
-          <img src={assets.logo} alt="DocFlow Logo" className="mb-4 w-36" />
+          <img src="../../public/images/logo1.PNG" alt="DocFlow Logo" className="mb-4 w-36" />
 
             <p className="text-gray-600 leading-relaxed">
               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
