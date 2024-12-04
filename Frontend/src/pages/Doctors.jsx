@@ -54,7 +54,7 @@ const Doctors = () => {
         {filterDoc.length > 0 ? (
           filterDoc.map((item, index) => (
             <div
-              onClick={() => navigate(`/my-appointments/${item._id}`)}
+              onClick={() => navigate(`/appointment/${item._id}`)}
               key={index}
               className="border border-gray-300 rounded overflow-hidden cursor-pointer hover:shadow-md transition-all"
             >
