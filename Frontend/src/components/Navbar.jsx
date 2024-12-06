@@ -57,7 +57,7 @@ const Navbar = () => {
                   My Profile
                 </p>
                 <p
-                  onClick={() => navigate('my-appointments')}
+                  onClick={() => navigate('appointment')}
                   className="hover:text-black cursor-pointer"
                 >
                   My Appointments

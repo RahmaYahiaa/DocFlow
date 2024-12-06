@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build files
+/dist
+/build
+
+# Log files
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Lock files
+yarn.lock
+package-lock.json
