@@ -6,6 +6,7 @@ const Doctors = () => {
   const navigate = useNavigate();
   const { doctors } = useContext(AppContext);
   const [filterDoc, setFilterDoc] = useState(doctors);
+  const [showFilter, setShowFilter] = useState(false);
   const [selectedSpeciality, setSelectedSpeciality] = useState(null); // Track the selected speciality
 
   const handleSpecialityClick = (speciality) => {
@@ -29,7 +30,13 @@ const Doctors = () => {
       {/* Specialities Section */}
       <div className="w-full md:w-1/4 pr-4 mb-6 md:mb-0">
         <p className="text-gray-600 mb-4 text-lg">Specialities</p>
-        <div className="flex flex-col gap-2">
+        <button
+          className={`py-1 px-3 border rounded text-sm transition-all sm:hidden ${showFilter ? 'bg-primary text-white' : ''}`}
+          onClick={() => setShowFilter((prev) => !prev)}
+        >
+          Filters
+        </button>
+        <div className={`flex flex-col gap-2 ${showFilter ? 'flex' : 'hidden sm:flex'}`}>
           {[
             "General Physician",
             "Gynecologist",
