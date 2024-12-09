@@ -1,23 +1,31 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets.js";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AppContext } from "../context/AppContext.jsx";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true);
+
+  // استخدام useContext للحصول على token و setToken
+  const { token, setToken } = useContext(AppContext);
+
+  // دالة تسجيل الخروج
+  const logout = () => {
+    setToken(false);
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
   return (
     <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400">
-      {/* Logo */}
       <img
         onClick={() => navigate('/')}
         className="w-44 cursor-pointer"
         src="/images/logo1.PNG"
         alt="Logo"
       />
-
-      {/* Navigation Links */}
+      
       <ul className="hidden md:flex items-start gap-5 font-medium">
         <NavLink
           to="/"
@@ -45,7 +53,6 @@ const Navbar = () => {
         </NavLink>
       </ul>
 
-      {/* Profile or Login Button */}
       <div className="flex items-center gap-4">
         {token ? (
           <div className="flex items-center gap-2 cursor-pointer group relative">
@@ -59,7 +66,6 @@ const Navbar = () => {
               src={assets.dropdown_icon}
               alt="Dropdown Icon"
             />
-            {/* Dropdown Menu */}
             <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block">
               <div className="min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4">
                 <p
@@ -75,7 +81,7 @@ const Navbar = () => {
                   My Appointments
                 </p>
                 <p
-                  onClick={() => setToken(false)}
+                  onClick={logout}
                   className="hover:text-black cursor-pointer"
                 >
                   Logout
@@ -91,15 +97,14 @@ const Navbar = () => {
             Create Account
           </button>
         )}
-        <img onClick={() => setShowMenu(true)} className="w-6 md:hidden" src={assets.menu_icon} alt="" />
+        <img onClick={() => setShowMenu(true)} className="w-6 md:hidden" src={assets.menu_icon} alt="Menu Icon" />
         
-        {/*------------Mobile menu -----------*/ }
         <div
           className={`${showMenu ? 'fixed w-full' : 'h-0 w-0'} md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden bg-white transition-all`}
         >
           <div className="flex items-center justify-between px-5 py-6">
-            <img className="w-36" src={assets.logo} alt="" />
-            <img className="w-7" onClick={() => setShowMenu(false)} src={assets.cross_icon} alt="" />
+            <img className="w-36" src={assets.logo} alt="Logo" />
+            <img className="w-7" onClick={() => setShowMenu(false)} src={assets.cross_icon} alt="Close Icon" />
           </div>
           <ul className="flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium">
             <NavLink onClick={() => setShowMenu(false)} to='/'>
