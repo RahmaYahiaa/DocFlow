@@ -26,16 +26,23 @@ const AppContextProvider = ({ children }) => {
 
 export default AppContextProvider;
 
-// import { createContext, useState } from "react";
-// import { doctors } from "../assets/assets"; // Ensure the path is correct
+
+
+
+
+// //////
+// import { createContext, useEffect, useState } from "react";
+// import toast from "react-toastify"
+// // import { doctors } from "../assets/assets.js";
+// import axios from 'axios'
 
 // export const AppContext = createContext();
 
 // const AppContextProvider = ({ children }) => {
 //   const currencySymbol = '$';
-//   const backendUrl = import.meta.env.VITE.BACKEND_URL || 'http://localhost:5000'; 
-
-//   const [token, setToken] = useState(localStorage.getItem('token') || false);
+//   const backendUrl = 'http://localhost:5000';
+//   const [doctor,setDoctor]=useState([])
+//   const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false);
 
 //   const value = {
 //     doctors,
@@ -44,7 +51,24 @@ export default AppContextProvider;
 //     setToken,
 //     backendUrl,
 //   };
+//    const getDoctorsData = async () => {
+//     try{
+//     const { data } = await axios.get(backendUrl + '/api/doctor/list');
+//     if(data.success){
+//       setDoctor(data.doctors)}
+//       else{
+//         toast.error(data.message)
+//       }
 
+//     }catch(error){
+// console.log(error)
+// toast.error(error.message)
+//     }
+//    }
+//    useEffect(()=>{
+//     getDoctorsData()
+//    },[])
+//    }
 //   return (
 //     <AppContext.Provider value={value}>
 //       {children}
