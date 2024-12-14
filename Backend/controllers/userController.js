@@ -145,5 +145,45 @@ const listAppointment = async (req,res) =>{
     }
 }
 
+// api user profile data
+const getProfile = async(req,res)=>{
+    try {
+        const{userId}=req.body
+        // find user data
+        const userData = await userModel.findById(userId).select('-password')
+        res.json({success:true, userData})
+    } catch (error) {
+        console.log(error)
+        res.json({success:false, message:error.message})
+    }
+}
 
-export {registerUser,loginUser,bookAppointment,listAppointment} ;
+// API to update user profile data
+const updateProfile = async(req,res)=>{
+    try {
+        const{userId,name,phone,address,dob,gender}=req.body
+        const imageFile = req.file
+        // find user data
+        if(!name||!phone||!gender||!dob)
+        {
+            return res.json({success:false, message:"Missing Details"})
+        }
+        await userModel.findByIdAndUpdate(userId,{name,phone,address:JSON.parse(address),dob,gender})
+
+        if(imageFile)
+        {
+            const imageUpload = await cloudinary.uploader.upload(imageFile.path,{resource_type:'image'})
+            const imageUrl = imageUpload.secure_url
+            await userModel.findByIdAndUpdate(userId,{profilePic:imageUrl})
+
+        }
+        res.json({success:true, message:"Profile updated successfully"})
+  
+    } catch (error) {
+        console.log(error)
+        res.json({success:false, message:error.message})
+    }
+}
+
+
+export {registerUser,loginUser,getProfile,updateProfile,bookAppointment,listAppointment} ;

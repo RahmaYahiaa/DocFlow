@@ -15,7 +15,31 @@ const AppContextProvider = ({ children }) => {
     token,
     setToken,
     backendUrl,
+    // userData,
+    // setUserData,
+    // loadUserProfileData
   };
+  const loadUserProfileData = async () => {
+    try{
+      const {data} = await axios.get(backendUrl+'/api/user/get-profile',{ headers:{token}});
+      if(data.success){
+        setUserData(data.userData);
+      }else{
+        toast.error(err.message);
+      }
+    }catch(err){
+      console.log(err);
+      toast.error(err.message);
+    }
+  }
+  // // use effect
+  // useEffect(()=>{
+  //   if(token){
+  //     loadUserProfileData();
+  //   }else{
+  //     setUserData(false);
+  //   }
+  // },[token]);
 
   return (
     <AppContext.Provider value={value}>
