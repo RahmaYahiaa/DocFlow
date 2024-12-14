@@ -1,7 +1,9 @@
 import validator from 'validator'
 import bcrypt from 'bcrypt'
 import userModel from '../models/userModel.js';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import appointmentModel from '../models/appointmentModel.js';
+import doctorModel from '../models/doctorModel.js';
 
 //register user
 const registerUser = async(req,res)=>{
@@ -66,4 +68,82 @@ catch(error){
     res.json({success:false, message:error.message})
 }
 }
-export {registerUser,loginUser} 
+
+
+// API to Book Appointment
+
+
+const bookAppointment = async ( req , res ) => {
+    try {
+        const { userID , docID , slotDate , slotTime } = req.body;
+
+        const docData = await doctorModel.findById( docID ).select('.password');
+        if(!docData.available){
+            return res.json({sucess: false , message: 'Doctor not available'});
+        }
+        let slots_booked = docData.slots_booked
+
+        //Checkinng for slot Availabilty
+        if(slots_booked[slotDate]) {
+            if(slots_booked[slotDate].includes[slotTime]){
+                return res.json({sucess: false , message: 'Slot not Availabe'});
+            }else{
+                slots_booked[slotDate].push(slotTime)
+            }
+        }else{
+            slots_booked[slotDate] = []
+            slots_booked[slotDate].push(slotTime);
+        }
+
+        const userData  = await userModel.findById(userID).select("-password");
+
+        delete docData.slots_booked ;
+
+        const appointmentData = {
+            userID,
+            docID,
+            userData,
+            docData,
+            amount:docData.fees,
+            slotTime,
+            slotDate,
+            date: Date.now()
+        }
+
+        const newAppointment = new appointmentModel(appointmentData)
+        await newAppointment.save();
+
+
+        //sava new slots data in docData
+        await doctorModel.findById(docID,{slots_booked});
+        res.jason({sucess: true , message: 'Appointment Booked'})
+
+        
+    } catch (error) {
+        console.log(error);
+        res.json({success: false , message: error.message});
+
+        
+    }
+}
+
+
+
+//ApI to get user appointments for frontend my-appointments page
+
+const listAppointment = async (req,res) =>{
+    try {
+        const {userID} = req.body();
+        const appointments = await appointmentModel.find({userID})
+
+        res.jason({sucess: true , appointments})
+        
+    } catch (error) {
+        console.log(error);
+        res.json({success: false , message: error.message});
+        
+    }
+}
+
+
+export {registerUser,loginUser,bookAppointment,listAppointment} ;
