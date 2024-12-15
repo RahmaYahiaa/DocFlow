@@ -73,77 +73,141 @@ catch(error){
 // API to Book Appointment
 
 
-const bookAppointment = async ( req , res ) => {
+// const bookAppointment = async (req, res) => {
+//     try {
+//         const { userID, docID, slotDate, slotTime } = req.body;
+
+//         const docData = await doctorModel.findById(docID).select('.password');
+//         if (!docData.available) {
+//             return res.json({ success: false, message: 'Doctor not available' });
+//         }
+        
+//         let slots_booked = docData.slots_booked;
+
+//         // Checking for slot availability
+//         if (slots_booked[slotDate]) {
+//             if (slots_booked[slotDate].includes(slotTime)) {
+//                 return res.json({ success: false, message: 'Slot not available' });
+//             } else {
+//                 slots_booked[slotDate].push(slotTime);
+//             }
+//         } else {
+//             slots_booked[slotDate] = [];
+//             slots_booked[slotDate].push(slotTime);
+//         }
+
+//         const userData = await userModel.findById(userID).select("-password");
+
+//         delete docData.slots_booked;
+
+//         const appointmentData = {
+//             userID,
+//             docID,
+//             userData,
+//             docData,
+//             amount: docData.fees,
+//             slotTime,
+//             slotDate,
+//             date: Date.now()
+//         };
+
+//         const newAppointment = new appointmentModel(appointmentData);
+//         await newAppointment.save();
+
+//         // Save new slots data in docData
+//         await doctorModel.findByIdAndUpdate(docID, { slots_booked });
+
+//         res.json({ success: true, message: 'Appointment Booked' });
+
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// }
+
+const bookAppointment = async (req, res) => {
     try {
-        const { userID , docID , slotDate , slotTime } = req.body;
+        const { userID, docID, slotDate, slotTime } = req.body;
 
-        const docData = await doctorModel.findById( docID ).select('.password');
-        if(!docData.available){
-            return res.json({sucess: false , message: 'Doctor not available'});
+        const docData = await doctorModel.findById(docID).select('.password');
+        if (!docData.available) {
+            return res.json({ success: false, message: 'Doctor not available' });
         }
-        let slots_booked = docData.slots_booked
+        
+        let slots_booked = docData.slots_booked || {};  // التأكد من أن المتغير غير فارغ
 
-        //Checkinng for slot Availabilty
-        if(slots_booked[slotDate]) {
-            if(slots_booked[slotDate].includes[slotTime]){
-                return res.json({sucess: false , message: 'Slot not Availabe'});
-            }else{
-                slots_booked[slotDate].push(slotTime)
+        // التحقق من توفر الموعد
+        if (slots_booked[slotDate]) {
+            if (slots_booked[slotDate].includes(slotTime)) {
+                return res.json({ success: false, message: 'Slot not available' });
+            } else {
+                slots_booked[slotDate].push(slotTime);  // إضافة الموعد الجديد
             }
-        }else{
-            slots_booked[slotDate] = []
-            slots_booked[slotDate].push(slotTime);
+        } else {
+            slots_booked[slotDate] = [slotTime];  // إضافة التاريخ والوقت لأول مرة
         }
 
-        const userData  = await userModel.findById(userID).select("-password");
+        const userData = await userModel.findById(userID).select("-password");
 
-        delete docData.slots_booked ;
+        delete docData.slots_booked;
 
         const appointmentData = {
             userID,
             docID,
             userData,
             docData,
-            amount:docData.fees,
+            amount: docData.fees,
             slotTime,
             slotDate,
             date: Date.now()
-        }
+        };
 
-        const newAppointment = new appointmentModel(appointmentData)
+        const newAppointment = new appointmentModel(appointmentData);
         await newAppointment.save();
 
+        // حفظ المواعيد الجديدة في `slots_booked` للطبيب
+        await doctorModel.findByIdAndUpdate(docID, { slots_booked });
 
-        //sava new slots data in docData
-        await doctorModel.findById(docID,{slots_booked});
-        res.jason({sucess: true , message: 'Appointment Booked'})
-
-        
+        res.json({ success: true, message: 'Appointment Booked' });
     } catch (error) {
         console.log(error);
-        res.json({success: false , message: error.message});
-
-        
+        res.json({ success: false, message: error.message });
     }
-}
-
-
+};
 
 //ApI to get user appointments for frontend my-appointments page
 
-const listAppointment = async (req,res) =>{
-    try {
-        const {userID} = req.body();
-        const appointments = await appointmentModel.find({userID})
+// const listAppointment = async (req, res) => {
+//     try {
+//         const { userID } = req.body;  
+//         const appointments = await appointmentModel.find({ userID });
 
-        res.jason({sucess: true , appointments})
-        
+//         res.json({ success: true, appointments });  
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// }
+const listAppointment = async (req, res) => {
+    try {
+        const { userID } = req.body;
+        if (!userID) {
+            return res.json({ success: false, message: "User ID is required." });
+        }
+
+        const appointments = await appointmentModel.find({ userID });
+        if (appointments.length === 0) {
+            return res.json({ success: false, message: "No appointments found." });
+        }
+
+        res.json({ success: true, appointments });
     } catch (error) {
         console.log(error);
-        res.json({success: false , message: error.message});
-        
+        res.json({ success: false, message: error.message });
     }
 }
+
+
 
 // api user profile data
 const getProfile = async(req,res)=>{

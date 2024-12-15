@@ -1,6 +1,8 @@
 import express from 'express';
-//import authUser from '../middleware/authUser.js';
+import authUser from '../middlewares/authUser.js';
 import {registerUser,loginUser,getProfile,updateProfile,bookAppointment,listAppointment} from '../controllers/userController.js';
+import upload from '../middlewares/multer.js';
+
 
 const userRouter = express.Router();
 
