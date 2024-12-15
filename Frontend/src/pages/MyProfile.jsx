@@ -1,11 +1,12 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { AppContext } from '../context/AppContext';
-import { toast } from 'react-toastify';
-import axios from 'axios';
-import { assets } from '../assets/assets'; // If you have assets like icons
+import { useContext, useState } from "react";
+import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { assets } from "../assets/assets"; // If you have assets like icons
 
 const MyProfile = () => {
-  const { userData, setUserData, token, backendUrl, loadUserProfileData } = useContext(AppContext);
+  const { userData, setUserData, token, backendUrl, loadUserProfileData } =
+    useContext(AppContext);
 
   const [isEdit, setIsEdit] = useState(false);
   const [image, setImage] = useState(null); // Set initial image to null
@@ -13,27 +14,29 @@ const MyProfile = () => {
   const updateUserProfileData = async () => {
     try {
       const formData = new FormData();
-      formData.append('name', userData.name);
-      formData.append('phone', userData.phone);
-      formData.append('address', JSON.stringify(userData.address));  // Make sure backend handles this correctly
-      formData.append('gender', userData.gender);
-      formData.append('dob', userData.dob);
-  
-      // Only append the image if there's one to send
+      formData.append("name", userData.name);
+      formData.append("phone", userData.phone);
+      formData.append("address", JSON.stringify(userData.address)); // Make sure backend handles this
+      formData.append("gender", userData.gender);
+      formData.append("dob", userData.dob);
       if (image) {
-        formData.append('image', image);
+        formData.append("image", image); // Only append image if it exists
       }
-  
+
       // Ensure the token is set in headers
       if (!token) {
         toast.error("No token found, please login again.");
         return;
       }
-  
-      const { data } = await axios.post(`${backendUrl}/api/user/update-profile`, formData, {
-        headers: { token },
-      });
-  
+
+      const { data } = await axios.put(
+        `${backendUrl}/api/user/update-profile`,
+        formData,
+        {
+          headers: { token },
+        }
+      );
+
       if (data.success) {
         toast.success(data.message);
         await loadUserProfileData(); // Reload user data after update
@@ -47,7 +50,6 @@ const MyProfile = () => {
       toast.error(err.message || "An error occurred");
     }
   };
-  
 
   if (!userData) {
     return <p>Loading...</p>; // Loading state while user data is not available
@@ -63,7 +65,11 @@ const MyProfile = () => {
               src={image ? URL.createObjectURL(image) : userData.image}
               alt="Profile"
             />
-            <img className="w-10 absolute bottom-12 right-12" src={assets.upload_icon} alt="Upload" />
+            <img
+              className="w-10 absolute bottom-12 right-12"
+              src={assets.upload_icon}
+              alt="Upload"
+            />
           </div>
           <input
             onChange={(e) => setImage(e.target.files[0])}
@@ -82,10 +88,14 @@ const MyProfile = () => {
             className="bg-gray-50 text-3xl font-medium max-w-60 mt-4"
             type="text"
             value={userData.name}
-            onChange={(e) => setUserData((prev) => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setUserData((prev) => ({ ...prev, name: e.target.value }))
+            }
           />
         ) : (
-          <p className="font-medium text-3xl text-neutral-800 mt-4">{userData.name}</p>
+          <p className="font-medium text-3xl text-neutral-800 mt-4">
+            {userData.name}
+          </p>
         )}
         <hr className="bg-zinc-400 h-[1px] border-none" />
 
@@ -99,7 +109,9 @@ const MyProfile = () => {
               <input
                 type="text"
                 value={userData.phone}
-                onChange={(e) => setUserData((prev) => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) =>
+                  setUserData((prev) => ({ ...prev, phone: e.target.value }))
+                }
               />
             ) : (
               <p className="text-blue-500">{userData.phone}</p>
@@ -118,6 +130,7 @@ const MyProfile = () => {
                   }
                   type="text"
                 />
+
                 <br />
                 <input
                   className="bg-gray-50"
@@ -148,7 +161,9 @@ const MyProfile = () => {
             {isEdit ? (
               <select
                 className="max-w-28 bg-gray-100"
-                onChange={(e) => setUserData((prev) => ({ ...prev, gender: e.target.value }))}
+                onChange={(e) =>
+                  setUserData((prev) => ({ ...prev, gender: e.target.value }))
+                }
                 value={userData.gender}
               >
                 <option value="Male">Male</option>
@@ -163,7 +178,9 @@ const MyProfile = () => {
                 className="max-w-28 bg-gray-100"
                 type="date"
                 value={userData.dob}
-                onChange={(e) => setUserData((prev) => ({ ...prev, dob: e.target.value }))}
+                onChange={(e) =>
+                  setUserData((prev) => ({ ...prev, dob: e.target.value }))
+                }
               />
             ) : (
               <p>{userData.dob}</p>
