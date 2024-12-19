@@ -126,55 +126,115 @@ catch(error){
 //     }
 // }
 
+// const bookAppointment = async (req, res) => {
+//     try {
+//         const { userId, docId, slotDate, slotTime } = req.body;
+
+//         // التحقق من وجود userID و slotDate و slotTime
+//         if (!userId || !slotDate || !slotTime) {
+//             return res.json({ success: false, message: "Missing required fields for booking appointment." });
+//         }
+
+//         const docData = await doctorModel.findById(docId).select('.password');
+//         if (!docData.available) {
+//             return res.json({ success: false, message: 'Doctor not available' });
+//         }
+
+//         let slots_booked = docData.slots_booked || {};
+
+//         // التحقق من توفر الموعد
+//         if (slots_booked[slotDate]) {
+//             if (slots_booked[slotDate].includes(slotTime)) {
+//                 return res.json({ success: false, message: 'Slot not available' });
+//             } else {
+//                 slots_booked[slotDate].push(slotTime);
+//             }
+//         } else {
+//             slots_booked[slotDate] = [slotTime];
+//         }
+
+//         const userData = await userModel.findById(userId).select("-password");
+
+//         delete docData.slots_booked;
+
+//         const appointmentData = {
+//             userId,
+//             docId,
+//             userData: {
+//               name: userData.name,
+//               email: userData.email,
+//             },
+//             docData: {
+//               name: docData.name,
+//               specialization: docData.specialization,
+//               fees: docData.fees,
+//             },
+//             amount: docData.fees,
+//             slotTime,
+//             slotDate,
+//             date: Date.now(),
+//           };
+
+//         const newAppointment = new appointmentModel(appointmentData);
+//         await newAppointment.save();
+
+//         // تحديث مواعيد الطبيب
+//         await doctorModel.findByIdAndUpdate(docId, { slots_booked });
+
+//         res.json({ success: true, message: 'Appointment Booked' });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
 const bookAppointment = async (req, res) => {
     try {
-        const { userID, docID, slotDate, slotTime } = req.body;
+        const { userId, docId, slotDate, slotTime } = req.body;
 
-        const docData = await doctorModel.findById(docID).select('.password');
+        if (!userId || !slotDate || !slotTime || !docId) {
+            return res.json({ success: false, message: "Missing required fields." });
+        }
+
+        const docData = await doctorModel.findById(docId).select("-password");
+        if (!docData) {
+            return res.json({ success: false, message: "Doctor not found" });
+        }
+
         if (!docData.available) {
-            return res.json({ success: false, message: 'Doctor not available' });
-        }
-        
-        let slots_booked = docData.slots_booked || {};  // التأكد من أن المتغير غير فارغ
-
-        // التحقق من توفر الموعد
-        if (slots_booked[slotDate]) {
-            if (slots_booked[slotDate].includes(slotTime)) {
-                return res.json({ success: false, message: 'Slot not available' });
-            } else {
-                slots_booked[slotDate].push(slotTime);  // إضافة الموعد الجديد
-            }
-        } else {
-            slots_booked[slotDate] = [slotTime];  // إضافة التاريخ والوقت لأول مرة
+            return res.json({ success: false, message: "Doctor not available" });
         }
 
-        const userData = await userModel.findById(userID).select("-password");
-
-        delete docData.slots_booked;
+        const userData = await userModel.findById(userId).select("-password");
 
         const appointmentData = {
-            userID,
-            docID,
-            userData,
-            docData,
+            userId,
+            docId,
+            userData: {
+                name: userData.name,
+                email: userData.email,
+            },
+            docData: {
+                name: docData.name,
+                speciality: docData.speciality,
+                fees: docData.fees,
+            },
             amount: docData.fees,
             slotTime,
             slotDate,
-            date: Date.now()
+            date: Date.now(),
         };
 
         const newAppointment = new appointmentModel(appointmentData);
         await newAppointment.save();
 
-        // حفظ المواعيد الجديدة في `slots_booked` للطبيب
-        await doctorModel.findByIdAndUpdate(docID, { slots_booked });
-
-        res.json({ success: true, message: 'Appointment Booked' });
+        res.json({ success: true, message: "Appointment booked successfully" });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.json({ success: false, message: error.message });
     }
 };
+
 
 //ApI to get user appointments for frontend my-appointments page
 
@@ -191,12 +251,12 @@ const bookAppointment = async (req, res) => {
 // }
 const listAppointment = async (req, res) => {
     try {
-        const { userID } = req.body;
-        if (!userID) {
+        const { userId } = req.body;
+        if (!userId) {
             return res.json({ success: false, message: "User ID is required." });
         }
 
-        const appointments = await appointmentModel.find({ userID });
+        const appointments = await appointmentModel.find({ userId });
         if (appointments.length === 0) {
             return res.json({ success: false, message: "No appointments found." });
         }

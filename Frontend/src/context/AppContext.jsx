@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify"; // التأكد من استيراد toast بشكل صحيح
 import axios from "axios";
 
@@ -9,6 +9,8 @@ const AppContextProvider = ({ children }) => {
   const backendUrl = "http://localhost:5000";
 
   // تعريف الحالات (states)
+  // const { userId } = useContext(AppContext);
+  // console.log("User ID:", userId); // تحقق من ظهور userId بشكل صحيح
   const [doctor, setDoctor] = useState([]);
   const [userData, setUserData] = useState(null); // إضافة userData و setUserData
   const [token, setToken] = useState(
@@ -63,6 +65,7 @@ const AppContextProvider = ({ children }) => {
 
   // القيمة التي سيتم تمريرها إلى الـ Context
   const value = {
+    userId: userData ? userData._id : null,
     doctors: doctor,
     currencySymbol,
     token,
