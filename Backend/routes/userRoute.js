@@ -14,7 +14,7 @@ userRouter.get('/get-profile', authUser,getProfile);
 
 userRouter.put('/update-profile', upload.single('image'), authUser, updateProfile);
 
-userRouter.post('/book-appointment',  bookAppointment);
+userRouter.post('/book-appointment',bookAppointment);
 
 userRouter.get('/appointments' , listAppointment  );
 

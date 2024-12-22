@@ -73,7 +73,7 @@ const AppContextProvider = ({ children }) => {
     backendUrl,
     userData,
     setUserData,
-    loadUserProfileData,
+    loadUserProfileData,getDoctorsData
   };
 
   return (

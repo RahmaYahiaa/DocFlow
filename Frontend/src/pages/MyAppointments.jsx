@@ -8,6 +8,8 @@ const MyAppointments = () => {
   const{backendUrl , token} = useContext(AppContext);
 
   const [appointments , setAppointments] = useState([]);
+
+
   const months = [' ','Jan', 'Feb', 'Mar','Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const slotDateFormat = (slotDate)=>{
     const dateArray = slotDate.split('_');
@@ -16,10 +18,14 @@ const MyAppointments = () => {
   
   const getUserAppointments = async () =>{
     try {
+
+
+      ///////////////////
       const {data} = await axios.get(backendUrl + '/api/user/appointments' ,  {headers:{token}})
 
       if(data.success) {
         setAppointments(data.appointments.reverse());
+        console.log(data.appointments);
       }
       
     } catch (error) {
@@ -32,8 +38,7 @@ const MyAppointments = () => {
     if(token){
       getUserAppointments();
     }
-
-  },[token])
+  },[token]);
 
 
 
@@ -69,4 +74,4 @@ const MyAppointments = () => {
   )
 }
 
-export default MyAppointments
+export default MyAppointments;

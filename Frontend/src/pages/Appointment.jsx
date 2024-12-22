@@ -201,7 +201,7 @@ import axios from "axios";
 
 const Appointment = () => {
   const { docId } = useParams();
-  const { doctors, currencySymbol, backendUrl } = useContext(AppContext); 
+  const { doctors, currencySymbol, backendUrl,getDoctorsData } = useContext(AppContext); 
   const navigate = useNavigate();
 
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -241,11 +241,26 @@ const Appointment = () => {
 
       while (currentDate < endTime) {
         let formattedTime = currentDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+         
+        let day= currentDate.getDate();
+            let month = currentDate.getMonth() +1;
+            let year = currentDate.getFullYear();
 
-        timeSlots.push({
-          datetime: new Date(currentDate),
-          time: formattedTime,
-        });
+            const slotDate = day + "_" + month + "_" + year ;
+            const slotTime = formattedTime ;
+
+            const isSlotAvailable = docInfo.slots_booked[slotDate] && docInfo.slots_booked[slotDate].includes(slotTime) ? false : true;
+
+        
+          if (isSlotAvailable) {
+               timeSlots.push({
+                datetime: new Date(currentDate),
+                time: formattedTime,
+              });
+
+          }
+
+        
 
         currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
@@ -258,9 +273,16 @@ const Appointment = () => {
     fetchDocInfo();
   }, [doctors, docId]);
 
+
   useEffect(() => {
     getAvailableSlots();
   }, [docInfo]);
+
+  useEffect( () =>{
+
+  }, [docSlots]);
+
+
 
   const bookAppointment = async () => {
     if (!token) {
@@ -288,7 +310,8 @@ const Appointment = () => {
 
         if (data.success) {
             toast.success(data.message);
-            navigate("/appointment");
+            getDoctorsData();
+            navigate("/appointments");
         } else {
             toast.error(data.message);
         }
