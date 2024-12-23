@@ -19,11 +19,13 @@ const Appointment = () => {
   const { token, userId } = useContext(AppContext);
 
   const fetchDocInfo = async () => {
-    const docInfo = doctors.find((doc) => doc._id === docId);
+    const docInfo = doctors.find((doc) => doc._id.toString() === docId);
     setDocInfo(docInfo);
   };
+  
 
   const getAvailableSlots = async () => {
+    if (!docInfo) return; // Ensure docInfo is not null before proceeding
     setDocSlots([]);
 
     // Get current date
@@ -82,8 +84,11 @@ const Appointment = () => {
 
 
   useEffect(() => {
-    getAvailableSlots();
+    if (docInfo) {
+      getAvailableSlots();
+    }
   }, [docInfo]);
+  
 
   useEffect( () =>{
 
@@ -111,9 +116,15 @@ const Appointment = () => {
     try {
         const { data } = await axios.post(
             `${backendUrl}/api/user/book-appointment`,
-            { userId, docId, slotDate, slotTime },
+            { userId, docId, slotDate, slotTime,docdata: docInfo, },
             { headers: { token } }
         );
+
+        console.log("userId:", userId);
+console.log("docId:", docId);
+console.log("slotDate:", slotDate);
+console.log("slotTime:", slotTime);
+console.log("docInfo:", docInfo);
 
         if (data.success) {
             toast.success(data.message);
@@ -181,6 +192,7 @@ const Appointment = () => {
           className="bg-primary text-sm text-white font-light px-14 py-3 rounded-full mt-7">
           Book An Appointment
         </button>
+        
       </div>
 
       {/* Listing Related Doctors */}
@@ -190,8 +202,5 @@ const Appointment = () => {
 };
 
 export default Appointment;
-
-
-///////////////////////////////////
 
 

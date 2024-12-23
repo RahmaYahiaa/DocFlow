@@ -65,14 +65,15 @@ const loginUser = async (req, res) => {
     }
 };
 
-// API to book appointment
+
+
 const bookAppointment = async (req, res) => {
     try {
-        const { userId, docId, slotDate, slotTime } = req.body;
+          const { userId, docId, slotDate, slotTime, docdata } = req.body;
 
-        if (!userId || !slotDate || !slotTime || !docId) {
-            return res.json({ success: false, message: "Missing required fields." });
-        }
+         if (!userId || !docId || !slotDate || !slotTime || !docdata) {
+    return res.json({ success: false, message: "Missing Details" });
+}
 
         const docData = await doctorModel.findById(docId).select("-password");
         if (!docData) {
@@ -101,18 +102,21 @@ const bookAppointment = async (req, res) => {
 
         delete docData.slots_booked;
 
-        const appointmentData = {
-            userId,
-            docId,
-            userData,
-            docData,
-            amount: docData.fees,
-            slotTime,
-            slotDate,
-            date: Date.now(),
-        };
+       const newAppointment = new appointmentModel({
+    userId,
+    docId,
+    slotDate,
+    slotTime,
+    docdata: docData,
+    userData: req.user, 
+    amount: docData.fees,
+    date: new Date().getTime(),
+    cancelled: false,
+    payment: false,
+    isCompleted: false,
+});
 
-        const newAppointment = new appointmentModel(appointmentData);
+        // newAppointment = new appointmentModel(appointmentData);
         await newAppointment.save();
 
         // Save new slot in docData
