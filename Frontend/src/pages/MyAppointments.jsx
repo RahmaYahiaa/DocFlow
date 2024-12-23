@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const MyAppointments = () => {
-  const { backendUrl, token  ,getDoctorsData} = useContext(AppContext);
+  const { backendUrl, token, getDoctorsData } = useContext(AppContext);
   const [appointments, setAppointments] = useState([]);
+  const navigate = useNavigate(); // Initialize useNavigate
   const months = [' ', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const slotDateFormat = (slotDate) => {
@@ -32,7 +34,7 @@ const MyAppointments = () => {
       if (data.success) {
         toast.success(data.message);
         getUserAppointments(); // Refresh the appointments after cancellation
-        getDoctorsData()
+        getDoctorsData();
       } else {
         toast.error(data.message);
       }
@@ -84,7 +86,7 @@ const MyAppointments = () => {
                 )}
                 {/* Conditionally render Pay Online button if not cancelled */}
                 {!item.cancelled && (
-                  <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
+                  <button onClick={() => navigate('/pay-online')} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
                     Pay Online
                   </button>
                 )}
