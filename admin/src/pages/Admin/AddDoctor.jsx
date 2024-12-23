@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { assets } from "../../assets/assets";
 import { AdminContext } from "../../context/AdminContext";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 const AddDoctor = () => {
@@ -66,14 +67,24 @@ const AddDoctor = () => {
       
      if(data.sucess){
       toast.success(data.message)
+      setDocImg(false);
+      setName('');
+      setEmail('');
+      setPassword('');
+      setExperience('1 Year');
+      setFees('');
+      setAbout('');
+      setSpeciality('General Physician');
+      setDegree('');
+      setAddress1('');
+      setAddress2('');
      }else{
       toast.error(data.message)
      }
 
      } catch (error) {
-      
-     }
-
+      console.error(error);
+  }
   }
 
 
