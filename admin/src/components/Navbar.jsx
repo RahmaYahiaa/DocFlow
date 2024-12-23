@@ -12,11 +12,15 @@ const Navbar = () => {
     const navigate = useNavigate();
 
 
-    const logout =() =>{
-        navigate('/')
-        aToken && setAToken(' ');
-        aToken && localStorage.removeItem('aToken');
-    }
+    const logout = () => {
+      if (aToken) {
+          setAToken(null); // Set token to null to ensure proper state update
+          localStorage.removeItem('aToken'); // Remove token from localStorage
+      }
+      // Navigate after clearing the token
+      navigate('/');
+  };
+  
 
   return (
     <div className='flex justify-between items-center px-4 sm-px-10 border-b bg-white '>
