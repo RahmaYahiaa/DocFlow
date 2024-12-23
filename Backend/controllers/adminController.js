@@ -49,6 +49,7 @@ const addDoctor = async (req, res) => {
 
         const newDoctor= new doctorModel(doctorData)
         await newDoctor.save()
+        
         res.json({success:true, message:"Doctor added successfully"})
 
 
@@ -57,4 +58,42 @@ const addDoctor = async (req, res) => {
         res.json({success:false, message:error.message})
     }
 }
-export {addDoctor}
+
+//api for admin login
+
+const loginAdmin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+
+        if(email === process.process.env.ADMIN_EMAIL && process.process.env.ADMIN_PASSWORD ){
+            const token = isJWT.sign(email+password, process.env.JWT_SECRET)
+            res.json({sucess:true , token})
+        }else{
+            res.json({sucess:false, message:"Invaild credentials"})
+        }
+
+        } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+// api for doctor list
+
+const allDoctors = async (req,res) =>{
+    try{
+        const doctors = await doctorModel.find({}).select('-password');
+        res.json({success:true, doctors});
+        
+    }catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+   
+    }
+}
+
+
+
+
+export {addDoctor , loginAdmin , allDoctors }
