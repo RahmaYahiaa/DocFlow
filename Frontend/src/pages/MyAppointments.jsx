@@ -2,12 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-
+import { useNavigate } from "react-router-dom";
 const MyAppointments = () => {
-  const { backendUrl, token, getDoctorsData } = useContext(AppContext);
+  const { backendUrl, token ,getDoctorsData} = useContext(AppContext);
   const [appointments, setAppointments] = useState([]);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate()
   const months = [' ', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const slotDateFormat = (slotDate) => {
@@ -34,7 +33,7 @@ const MyAppointments = () => {
       if (data.success) {
         toast.success(data.message);
         getUserAppointments(); // Refresh the appointments after cancellation
-        getDoctorsData();
+        getDoctorsData()
       } else {
         toast.error(data.message);
       }
@@ -78,8 +77,8 @@ const MyAppointments = () => {
               </div>
               <div></div>
               <div className="flex flex-col gap-2 justify-end">
-                {/* Show a button if the appointment is canceled */}
-                {item.cancelled && (
+                                {/* Show a button if the appointment is canceled */}
+                                {item.cancelled && (
                   <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500">
                     Appointment cancelled
                   </button>
@@ -104,5 +103,5 @@ const MyAppointments = () => {
     </div>
   );
 };
-
+ 
 export default MyAppointments;
