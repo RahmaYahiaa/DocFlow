@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { assets } from "../../assets/assets";
 import { AdminContext } from "../../context/AdminContext";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 const AddDoctor = () => {
@@ -82,9 +83,8 @@ const AddDoctor = () => {
      }
 
      } catch (error) {
-      
-     }
-
+      console.error(error);
+  }
   }
 
 

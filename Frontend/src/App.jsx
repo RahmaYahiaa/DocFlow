@@ -10,7 +10,10 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Appointment from './pages/Appointment'
 import { ToastContainer } from 'react-toastify';
+import PayPalPayment from './pages/PayPalPayment';
+
 import 'react-toastify/dist/ReactToastify.css';
+
 
 const App = () => {
   return (
@@ -27,6 +30,7 @@ const App = () => {
         <Route path='/my-profile' element={<MyProfile />}></Route>
         <Route path='/my-appointments' element={<MyAppointments />}></Route>
         <Route path='/appointment/:docId' element={<Appointment />}></Route>
+        <Route path='/pay-online' element={<PayPalPayment />}></Route>
       </Routes>
       <Footer/>
 
@@ -35,3 +39,6 @@ const App = () => {
 }
 
 export default App;
+
+
+//<Route path='/pay-online' element={<PayPalPayment />} />

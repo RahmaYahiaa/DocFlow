@@ -2,10 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
 const MyAppointments = () => {
-  const { backendUrl, token  ,getDoctorsData} = useContext(AppContext);
+  const { backendUrl, token ,getDoctorsData} = useContext(AppContext);
   const [appointments, setAppointments] = useState([]);
+  const navigate = useNavigate()
   const months = [' ', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const slotDateFormat = (slotDate) => {
@@ -58,33 +59,33 @@ const MyAppointments = () => {
           appointments.map((item) => (
             <div className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b" key={item._id}>
               <div>
-                {item.docData?.image ? (
-                  <img className="w-32 bg-indigo-50" src={item.docData.image} alt="" />
+                {item.docdata?.image ? (
+                  <img className="w-32 bg-indigo-50" src={item.docdata.image} alt="" />
                 ) : (
                   <p>No image available</p>
                 )}
               </div>
               <div className="flex-1 text-sm text-zinc-600">
-                <p className="text-neutral-800 font-semibold">{item.docData?.name || 'N/A'}</p>
-                <p>{item.docData?.speciality || 'N/A'}</p>
+                <p className="text-neutral-800 font-semibold">{item.docdata?.name || 'N/A'}</p>
+                <p>{item.docdata?.speciality || 'N/A'}</p>
                 <p className="text-zinc-700 font-medium mt-1">Address:</p>
-                <p className="text-xs">{item.docData?.address?.line1 || 'N/A'}</p>
-                <p className="text-xs">{item.docData?.address?.line2 || 'N/A'}</p>
+                <p className="text-xs">{item.docdata?.address?.line1 || 'N/A'}</p>
+                <p className="text-xs">{item.docdata?.address?.line2 || 'N/A'}</p>
                 <p className="text-sm mt-1">
                   <span className="text-sm text-neutral-700 font-medium">Date & Time:</span> {slotDateFormat(item.slotDate)} | {item.slotTime}
                 </p>
               </div>
               <div></div>
               <div className="flex flex-col gap-2 justify-end">
-                {/* Show a button if the appointment is canceled */}
-                {item.cancelled && (
+                                {/* Show a button if the appointment is canceled */}
+                                {item.cancelled && (
                   <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500">
                     Appointment cancelled
                   </button>
                 )}
                 {/* Conditionally render Pay Online button if not cancelled */}
                 {!item.cancelled && (
-                  <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
+                  <button onClick={() => navigate('/pay-online')} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
                     Pay Online
                   </button>
                 )}
@@ -102,5 +103,5 @@ const MyAppointments = () => {
     </div>
   );
 };
-
+ 
 export default MyAppointments;
