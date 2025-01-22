@@ -7,10 +7,17 @@ import userRouter from './routes/userRoute.js';
 import adminRouter from './routes/adminRoute.js';
 import doctorRouter from './routes/doctorRoute.js';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
+console.log('MONGODB_URI:', process.env.MONGODB_URI); // Log to check if the variable is loaded correctly
 
 //app config 
 const app = express();
-const port =process.env.PORT || 5000
+
+// Example usage of environment variables
+const port = process.env.PORT || 5000;
+
 connectDB()
 connectCloudinary()
 
